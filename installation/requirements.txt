@@ -1,0 +1,3 @@
+sckikit-commpy 
+numpy
+matplotlib

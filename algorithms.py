@@ -1,4 +1,4 @@
-import compy.filters as filter
+import commpy.filters as filter
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -53,6 +53,7 @@ def costasAlgo(samples,Ts):
 def getLPF():
     pass
 def getFilter(N,alpha,Ts,Fs):
+    filter.rrcosfilter(N,alpha,Ts,Fs)
     return filter.rrcosfilter(N,alpha,Ts,Fs)
 
 def filterSignal(signal,filter):
