@@ -44,6 +44,7 @@ def costasAlgo(samples,Ts):
         phase_correction =phase
 
     #Filtering the signal
+    # TODO
     lpf = getLPF()
     real_signal_filtered = filterSignal(real_signal,lpf)
     imag_signal_filtered = filterSignal(imag_signal,lpf)
