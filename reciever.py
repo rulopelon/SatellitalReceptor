@@ -38,4 +38,11 @@ while recieve:
     filtered_signal = filterSignal(samples,RRCosFilter)
     print("Filtered signal")
     showSpectrum(filtered_signal,fs)
+
+    # Recovering frecuency and phase 
+    costasAlgo(filtered_signal,fs)
+
+    #Recovering symbol sychronization
+    #Decoding the bit
+    # Saving the decoded signal
     i =i+1    
