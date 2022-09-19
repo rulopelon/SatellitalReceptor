@@ -2,7 +2,7 @@ from asyncio.windows_events import NULL
 import numpy as np 
 
 
-def matchedFilter(signal,f1,f2,T,Ts):
+def matchedFilter(signal,f1,T,Ts):
     #Function to apply a matched filter for the signal recieved
     filtered_signal = np.convolve(signal,f1)
     
@@ -45,8 +45,8 @@ def demodulator(signal,T,Fc,Fs):
 
     for i in len(real_part):
         #The signals are passed to the matched filter
-        real_filtered = matchedFilter(real_part[i],f1,T,Ts)
-        imaginary_filtered= matchedFilter(imaginary_part[i],f2,T,Ts)
+        real_filtered = matchedFilter(real_part,f1,T,Ts)
+        imaginary_filtered= matchedFilter(imaginary_part,f2,T,Ts)
 
         #Passing signals to the decisor
         
