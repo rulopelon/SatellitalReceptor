@@ -1,6 +1,6 @@
 %% Data generation
 N=15*10^5; % Amount of data
-Qpsk=[1+1i 1­1i ­1+1i ­1­1i]; % Four possible complex No. for QPSK
+Qpsk=[1+1i ­1i ­1+1i ­­1i]; % Four possible complex No. for QPSK
 data= Qpsk(randi(4,1,N)); % The data
 Tsym=100; % No.of samples per symbol
 noise=(randn(1,length(data)*Tsym)+1i*randn(1,length(data)*Tsym));
