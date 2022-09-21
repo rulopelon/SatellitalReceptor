@@ -12,7 +12,8 @@ num_samples = 10000 # number of samples returned per call to rx()
 recieve = True
 alpha = 0.6
 symbol_period = 4
-N  = 100
+length_rrcos_filter  = 100
+search_multiplier = 0.75
 
 sdr = adi.Pluto()
 sdr.gain_control_mode_chan0 = 'manual'
@@ -23,7 +24,8 @@ sdr.rx_rf_bandwidth = int(fs) # filter width, just set it to the same as sample 
 sdr.rx_buffer_size = num_samples
 
 #Filter to filter the recieved signal
-RRCosFilter = getFilter(N,alpha,symbol_period,fs)
+RRCosFilter = getFilter(length_rrcos_filter,alpha,symbol_period,fs)
+
 # The filter is shown
 showSpectrum(RRCosFilter,fs)
 
@@ -45,6 +47,6 @@ while recieve:
     showSpectrum(filtered_signal,fs)
 
     #Decoding the bit on each channel
-
+    bit_vector = demodulator(filtered_signal,symbol_period,fs,search_multiplier)
     # Saving the decoded signal
     i =i+1    
