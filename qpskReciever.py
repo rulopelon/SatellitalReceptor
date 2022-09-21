@@ -2,54 +2,53 @@ from asyncio.windows_events import NULL
 import numpy as np 
 
 
-def matchedFilter(signal,f1,T,Ts):
-    #Function to apply a matched filter for the signal recieved
-    filtered_signal = np.convolve(signal,f1)
-    
-   
-    return filtered_signal[T/Ts]
-    
 
-def decisor(signal_decide_f1,signal_decide_f2):
-    signal_return_f1 = NULL
-    signal_return_f2 = NULL
-
-    if signal_decide_f1>0:
-        signal_return_f1 = 0
-    elif signal_decide_f1 <0:
-        signal_return_f1 = 1
-
-    if signal_decide_f2>0:
-        signal_return_f2 = 0
-    elif signal_decide_f2 <0:
-        signal_return_f2 = 1
-
-    return signal_return_f1,signal_return_f2
-
-def demodulator(signal,T,Fc,Fs):
-    #Funcion to demodulate the recieved signal
+def demodulator(input_signal,T,Fs,search_multiplier):
+    #Funcion to demodulate the recieved input_signal
     Ts = 1/Fs
 
     final_vector = []
 
-    #Split the signal on the real and imaginary part
-    real_part = np.real(signal)
-    imaginary_part = np.imag(signal)
+    #Split the input_signal on the real and imaginary part
+    real_part = np.real(input_signal)
+    imaginary_part = np.imag(input_signal)
 
     # Generate the base functions
-    total_time = Ts*len(signal)
+    total_time = Ts*len(input_signal)
     # TODO
     t = np.linspace(0,total_time,total_time)# Creating the time vector 
-    f1 = np.sqrt(2/T)*np.cos(2*np.pi*Fc*t)
-    f2 = np.sqrt(2/T)*np.sin(2*np.pi*Fc*t)
+    
+    # The first ns seconds of input_signal are analyzed to get the first maximum, based on the symbol period and a multipier
+    
 
-    for i in len(real_part):
-        #The signals are passed to the matched filter
-        real_filtered = matchedFilter(real_part,f1,T,Ts)
-        imaginary_filtered= matchedFilter(imaginary_part,f2,T,Ts)
+    index_search = max_index
 
-        #Passing signals to the decisor
+    while index_search+T*search_multiplier*Fs <= len(input_signal):
+        # Passing the segment of signal to analyze to the
+        real_bit,imaginary_bit, new_index = decisor(real_part[index_search:index_search+T*search_multiplier*Fs],imaginary_part[index_search:index_search+T*search_multiplier*Fs])
         
-        real_detected,imag_detected =decisor(real_filtered,imaginary_filtered)
-        final_vector.append([real_detected,imag_detected])
-    return final_vector
+        #Updating the index to search
+        index_search = index_search+new_index
+
+def decisor(signal_real_decide, signal_imag_decide):
+
+    max_index_real = np.argmax(np.abs(signal_real_decide))
+    max_index_imaginary = np.argmax(np.abs(signal_imag_decide))
+    
+    bit_real = NULL
+    bit_imaginary = NULL
+
+    # TODO
+    # Decide the recieved bit on one channel
+    if signal_real_decide[max_index_real] >0:
+        bit_real = 0
+    else:
+        bit_real = 1
+    
+    # Decide the recieved bit on the other channel
+    if signal_imag_decide[max_index_imaginary] >0:
+        bit_imaginary = 0
+    else:
+        bit_imaginary = 1
+
+    return bit_real,bit_imaginary,max_index_real
