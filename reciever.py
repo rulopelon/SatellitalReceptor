@@ -2,6 +2,7 @@ import numpy as np
 import adi 
 import matplotlib.pyplot as plt
 from algorithms import *
+from qpskReciever import *
 
 
 #Variable declaration
@@ -33,16 +34,17 @@ while recieve:
 
     print("Recieved signal")
     showSpectrum(samples,fs)
+    
+    # Recovering frecuency and phase 
+    synchronized_signal = costasAlgo(samples,fs)
 
     # Filter the samples
-    filtered_signal = filterSignal(samples,RRCosFilter)
+    filtered_signal = filterSignal(synchronized_signal,RRCosFilter)
+
     print("Filtered signal")
     showSpectrum(filtered_signal,fs)
 
-    # Recovering frecuency and phase 
-    costasAlgo(filtered_signal,fs)
+    #Decoding the bit on each channel
 
-    #Recovering symbol sychronization
-    #Decoding the bit
     # Saving the decoded signal
     i =i+1    
