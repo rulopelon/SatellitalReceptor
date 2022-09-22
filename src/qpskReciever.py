@@ -1,5 +1,3 @@
-
-from asyncio.windows_events import NULL
 import numpy as np 
 
 
@@ -19,10 +17,10 @@ def demodulator(input_signal,T,fs,search_multiplier):
   
     while index_search+T*search_multiplier*fs <= len(input_signal):
         # Passing the segment of signal to analyze to the
-        real_bit,imaginary_bit, new_index = decisor(real_part[index_search:index_search+T*search_multiplier*fs],imaginary_part[index_search:index_search+T*search_multiplier*fs])
+        real_bit,imaginary_bit, new_index = decisor(real_part[index_search:round(index_search+T*search_multiplier*fs)],imaginary_part[index_search:round(index_search+T*search_multiplier*fs)])
         
         #Updating the index to search
-        index_search = index_search+new_index
+        index_search = round(index_search+new_index+0.25*T*fs)
 
         # Writting the results to the output array
         output_vector.append([real_bit,imaginary_bit])
@@ -34,20 +32,20 @@ def decisor(signal_real_decide, signal_imag_decide):
     max_index_real = np.argmax(np.abs(signal_real_decide))
     max_index_imaginary = np.argmax(np.abs(signal_imag_decide))
     
-    bit_real = NULL
-    bit_imaginary = NULL
+    bit_real = None
+    bit_imaginary = None
 
     # TODO
     # Decide the recieved bit on one channel
     if signal_real_decide[max_index_real] >0:
-        bit_real = 0
-    else:
         bit_real = 1
+    else:
+        bit_real = 0
     
     # Decide the recieved bit on the other channel
     if signal_imag_decide[max_index_imaginary] >0:
-        bit_imaginary = 0
-    else:
         bit_imaginary = 1
+    else:
+        bit_imaginary = 0
 
     return bit_real,bit_imaginary,max_index_real

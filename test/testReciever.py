@@ -1,21 +1,33 @@
 import numpy as np
-from qpskReciever import demodulator
-#File to test the different functions through the code
-
+from src.qpskReciever import *
+from src.algorithms import *
 import unittest
 
-class TestCalculaMedia(unittest.TestCase):
+#File to test the different functions through the code
+
+class TestREciever(unittest.TestCase):
     def testGetRRCosFilter(self):
-        self.assertEqual(1,1)
+        N = 200
+        alpha  = 0.5
+        Ts = 2
+        fs = 30
+
+        cos_filter = getFilter(N,alpha,Ts,fs)
+
+        self.assertEqual(N,len(cos_filter))
 
     def testDemodulator(self):
         fs = 30
         ts = 1/fs
         T = 2
+        N  = 200
+        alpha = 0.5
         samples_symbol = T*fs
 
+        cos_filter,time_index_filter = getFilter(N,alpha,T,fs)
+
         # First a random sequence of bits to send is created
-        random_vector = np.random.randint(0,2,10000)
+        random_vector = np.random.randint(0,2,10)
         random_vector_reshaped = np.reshape(random_vector,[int(len(random_vector)/2),2])
 
         signal_real = np.empty([0])
@@ -33,7 +45,8 @@ class TestCalculaMedia(unittest.TestCase):
                 signal_imag = np.append(signal_imag,np.ones(samples_symbol))
     
         final_signal = signal_real +1j*signal_imag
-
+    
+        final_signal  = filterSignal(final_signal,cos_filter)
 
         bits = demodulator(final_signal,T,fs,0.75)
         self.assertEqual(bits,random_vector)
