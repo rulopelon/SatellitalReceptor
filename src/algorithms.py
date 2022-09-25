@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from scipy import signal
 
 def costasAlgo(samples,Ts):
     # imaginary por el seno
@@ -51,7 +51,13 @@ def costasAlgo(samples,Ts):
     return np.complex(real_signal_filtered,imag_signal_filtered)
     
 def getLPF():
-    pass
+
+    with open('lpFilter.txt') as file:
+        lines = file.readlines()
+        lines = [line.rstrip() for line in lines]
+    return lines
+    
+
 def getFilter(N,alpha,Ts,Fs):
     """
     Generates a root raised cosine (RRC) filter (FIR) impulse response.
@@ -108,6 +114,11 @@ def filterSignal(signal,filter):
     filtered_signal = filtered_signal[int((len(filter)-1)/2):]
     filtered_signal = filtered_signal[:len(filtered_signal)-int((len(filter)-1)/2)-1]
     #return filtered_signal[int((len(filter)-1)/2):]
+    return filtered_signal
+
+def filterLowPass(b,a,signal):
+    # The filter signal could replace this but this is preferred as the filter could have a coeficients
+    filtered_signal = signal.lfilter(b,a,signal)
     return filtered_signal
 
 def showSpectrum(signal,fs):
