@@ -23,11 +23,12 @@ class TestREciever(unittest.TestCase):
         N  = 60
         alpha = 0.4
         samples_symbol = T*fs
+        test_symbols = 10000
 
         cos_filter,time_index_filter = getFilter(N,alpha,T,fs)
 
         # First a random sequence of bits to send is created
-        random_vector = np.random.randint(0,2,10)
+        random_vector = np.random.randint(0,2,test_symbols)
         random_vector_reshaped = np.reshape(random_vector,[int(len(random_vector)/2),2])
 
         signal_real = np.empty([0])
@@ -49,6 +50,11 @@ class TestREciever(unittest.TestCase):
 
         bits = demodulator(final_signal_filtered,T,fs,1)
         self.assertEqual(sum(bits-random_vector),0)
+    
+    def testGetLPFilter(self):
+        filter = getLPF()
+        self.assertIsInstance(type(filter),type(list))
+    
 
 
 if __name__ == '__main__':
