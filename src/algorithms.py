@@ -105,7 +105,9 @@ def getFilter(N,alpha,Ts,Fs):
 
 def filterSignal(signal,filter):
     filtered_signal = np.convolve(filter,signal)
-    #return filtered_signal[len(filter)-1:]
+    filtered_signal = filtered_signal[int((len(filter)-1)/2):]
+    filtered_signal = filtered_signal[:len(filtered_signal)-int((len(filter)-1)/2)-1]
+    #return filtered_signal[int((len(filter)-1)/2):]
     return filtered_signal
 
 def showSpectrum(signal,fs):

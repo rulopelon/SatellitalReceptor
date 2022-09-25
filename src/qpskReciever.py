@@ -1,3 +1,4 @@
+from operator import index
 import numpy as np 
 
 
@@ -7,45 +8,41 @@ def demodulator(input_signal,T,fs,search_multiplier):
     Ts = 1/fs
     # Array to output the result of the demodulation
     output_vector = []
-
+    #input_signal  = input_signal/max(np.abs(input_signal))
     #Split the input_signal on the real and imaginary part
     real_part = np.real(input_signal)
     imaginary_part = np.imag(input_signal)
 
-    index_search  =0
-    # The first ns seconds of input_signal are analyzed to get the first maximum, based on the symbol period and a multipier
-  
-    while index_search+T*search_multiplier*fs <= len(input_signal):
+    index_search  = int(T*fs/2)
+    #Search for the first symbol
+    index_search = index_search+np.argmax(np.abs(real_part[index_search:index_search*2]))
+
+    while index_search+int(T*fs/2) <= len(input_signal):
         # Passing the segment of signal to analyze to the
-        real_bit,imaginary_bit, new_index = decisor(real_part[index_search:round(index_search+T*search_multiplier*fs)],imaginary_part[index_search:round(index_search+T*search_multiplier*fs)])
+        bits = decisor(real_part[index_search],imaginary_part[index_search])
         
         #Updating the index to search
-        index_search = round(index_search+new_index+0.25*T*fs)
+        index_search = index_search+int(T*fs)
 
         # Writting the results to the output array
-        output_vector.append([real_bit,imaginary_bit])
+        output_vector.append([bits])
+
 
     return np.reshape(output_vector,[len(output_vector)*2,]) 
 
 def decisor(signal_real_decide, signal_imag_decide):
 
-    max_index_real = np.argmax(np.abs(signal_real_decide))
-    max_index_imaginary = np.argmax(np.abs(signal_imag_decide))
+    #max_index_real = np.argmax(np.abs(signal_real_decide))
+    #max_index_imaginary = np.argmax(np.abs(signal_imag_decide))
     
-    bit_real = None
-    bit_imaginary = None
-
-    # TODO
-    # Decide the recieved bit on one channel
-    if signal_real_decide[max_index_real] >0:
-        bit_real = 1
+       
+    if signal_real_decide >0 and signal_imag_decide >0:
+        bits = [1,1]
+    elif signal_real_decide >0 and signal_imag_decide <0:
+        bits = [0,1]
+    elif signal_real_decide <0 and signal_imag_decide <0:
+        bits = [0,0]
     else:
-        bit_real = 0
-    
-    # Decide the recieved bit on the other channel
-    if signal_imag_decide[max_index_imaginary] >0:
-        bit_imaginary = 1
-    else:
-        bit_imaginary = 0
+        bits = [1,0]
 
-    return bit_real,bit_imaginary,max_index_real
+    return bits
