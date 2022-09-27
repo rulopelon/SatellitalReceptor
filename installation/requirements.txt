@@ -2,3 +2,4 @@ scipy
 scikit-commpy 
 numpy
 matplotlib
+scikit-dsp-comm

@@ -54,7 +54,8 @@ class TestREciever(unittest.TestCase):
     def testGetLPFilter(self):
         filter = getLPF()
         self.assertIsInstance(type(filter),type(list))
-    
+    def testViterbiDecoder(self):
+        viterbiDecoding(np.random.randint(0,2,1000000))
 
 
 if __name__ == '__main__':
