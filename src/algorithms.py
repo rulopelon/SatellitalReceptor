@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import signal
+import sk_dsp_comm.fec_conv as fec
 
 def costasAlgo(samples,Ts):
     # imaginary por el seno
@@ -126,4 +126,9 @@ def showSpectrum(signal,fs):
     frequency_axis = np.linspace(-0.5*fs,0.5*fs,len(signal))
     plt.plot(frequency_axis,np.abs(fft_signal),'.-')
 
-    
+def viterbiDecoding(input_bits):
+    #Creates the
+    #https://scikit-dsp-comm.readthedocs.io/en/latest/_modules/sk_dsp_comm/fec_conv.html#FECConv
+    cc1 = fec.FECConv(('1001111','1101101'),25)
+    signal_decoded = cc1.viterbi_decoder(input_bits,'hard')
+    return signal_decoded
