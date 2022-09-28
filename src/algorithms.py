@@ -126,9 +126,16 @@ def showSpectrum(signal,fs):
     frequency_axis = np.linspace(-0.5*fs,0.5*fs,len(signal))
     plt.plot(frequency_axis,np.abs(fft_signal),'.-')
 
-def viterbiDecoding(input_bits):
+def viterbiDecoding(input_bits,depth):
     #Creates the
     #https://scikit-dsp-comm.readthedocs.io/en/latest/_modules/sk_dsp_comm/fec_conv.html#FECConv
-    cc1 = fec.FECConv(('1001111','1101101'),25)
+    cc1 = fec.FECConv(('1001111','1101101'),depth)
     signal_decoded = cc1.viterbi_decoder(input_bits,'hard')
-    return signal_decoded
+    return signal_decoded.astype(int)
+
+def viterbiEncoding(bits):
+    #Function to perform the viterbi enconding of the input signal based on xor
+    cc = fec.FECConv(('1001111','1101101'))
+    encoded_bits, state = cc.conv_encoder(bits, '0000000')
+    
+    return encoded_bits.astype(int)

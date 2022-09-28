@@ -1,3 +1,4 @@
+from decimal import ROUND_HALF_DOWN
 import numpy as np
 from src.qpskReciever import *
 from src.algorithms import *
@@ -50,12 +51,27 @@ class TestREciever(unittest.TestCase):
 
         bits = demodulator(final_signal_filtered,T,fs,1)
         self.assertEqual(sum(bits-random_vector),0)
-    
+
+    """
     def testGetLPFilter(self):
         filter = getLPF()
         self.assertIsInstance(type(filter),type(list))
+    """
+    def testViterbiLengthEncoder(self):
+        N = 1000
+        random_vector = np.random.randint(0,2,N)
+        encoded_bits = viterbiEncoding(random_vector)
+
+        self.assertEqual(len(random_vector)*2,len(encoded_bits))
+
     def testViterbiDecoder(self):
-        viterbiDecoding(np.random.randint(0,2,10))
+        depth = 8
+        N = 1000
+        random_vector = np.random.randint(0,2,N)
+        encoded_bits = viterbiEncoding(random_vector)
+        random_vector = random_vector[0:-(depth-1)]
+        decoded_bits = viterbiDecoding(encoded_bits,depth)
+        self.assertEqual(sum(decoded_bits-random_vector),0)
 
 
 if __name__ == '__main__':
