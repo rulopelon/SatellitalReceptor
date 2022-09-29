@@ -1,8 +1,9 @@
+# Code just to recieve data from the sdr and store it
 import numpy as np
-import adi 
 import matplotlib.pyplot as plt
 from algorithms import *
 from qpskReciever import *
+from libhackrf import *
 
 
 #Variable declaration
@@ -15,6 +16,13 @@ symbol_period = 4
 length_rrcos_filter  = 100
 search_multiplier = 0.75
 
+hackrf = HackRF()
+
+hackrf.sample_rate = int(fs)
+hackrf.center_freq = int(center_freq)
+hackrf.enable_amp()
+
+"""
 sdr = adi.Pluto()
 sdr.gain_control_mode_chan0 = 'manual'
 sdr.rx_hardwaregain_chan0 = 70.0 # dB
@@ -22,6 +30,8 @@ sdr.rx_lo = int(center_freq)
 sdr.fs = int(fs)
 sdr.rx_rf_bandwidth = int(fs) # filter width, just set it to the same as sample rate for now
 sdr.rx_buffer_size = num_samples
+"""
+
 
 #Filter to filter the recieved signal
 RRCosFilter = getFilter(length_rrcos_filter,alpha,symbol_period,fs)
@@ -31,8 +41,10 @@ showSpectrum(RRCosFilter,fs)
 
 i = 0
 while recieve:
-    samples = sdr.rx() # receive samples off Pluto
-    np.save(str(i)+'.npy')
+    samples = hackrf.read_samples(num_samples) # receive samples
+
+    # Save the samples
+    np.save(str(i)+'.npy',samples)
 
     print("Recieved signal")
     showSpectrum(samples,fs)
