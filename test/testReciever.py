@@ -8,11 +8,13 @@ import unittest
 
 class TestREciever(unittest.TestCase):
     def testGetRRCosFilter(self):
-        N = 200
         alpha  = 0.5
         Ts = 2
         fs = 30
+        filter_time = 10*Ts
 
+        t_index = np.linspace(int(-filter_time/2),int(filter_time/2),fs*filter_time)
+        N = len(t_index)
         cos_filter,time_index = getFilter(N,alpha,Ts,fs)
 
         self.assertEqual(N,len(cos_filter))
@@ -21,11 +23,14 @@ class TestREciever(unittest.TestCase):
         fs = 30
         ts = 1/fs
         T = 2
-        N  = 60
-        alpha = 0.4
+        alpha = 0.8
         samples_symbol = T*fs
-        test_symbols = 10000
+        test_symbols = 100
+        filter_time = 10*T
 
+        t_index = np.linspace(int(-filter_time/2),int(filter_time/2),fs*filter_time)
+        N = len(t_index)
+  
         cos_filter,time_index_filter = getFilter(N,alpha,T,fs)
 
         # First a random sequence of bits to send is created
@@ -50,7 +55,7 @@ class TestREciever(unittest.TestCase):
         final_signal_filtered  = filterSignal(final_signal,cos_filter)
 
         bits = demodulator(final_signal_filtered,T,fs,1)
-        self.assertEqual(sum(bits-random_vector),0)
+        self.assertEqual(sum(np.abs(bits-random_vector)),0)
 
     """
     def testGetLPFilter(self):
