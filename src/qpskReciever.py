@@ -17,7 +17,7 @@ def demodulator(input_signal,T,fs,search_multiplier):
     #Search for the first symbol
     index_search = index_search+np.argmax(np.abs(real_part[index_search:index_search*2]))
 
-    while index_search+int(T*fs/2) <= len(input_signal):
+    while index_search <= len(input_signal):
         # Passing the segment of signal to analyze to the
         bits = decisor(real_part[index_search],imaginary_part[index_search])
         
