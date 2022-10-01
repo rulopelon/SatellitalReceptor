@@ -14,7 +14,8 @@ def costasAlgo(samples,Ts):
     
     #Vector for the time
     total_time = Ts*len(samples)
-    t = np.linspace(0,total_time,total_time)# Creating the time vector
+
+    t = np.linspace(0,total_time,int((1/Ts)*total_time))# Creating the time vector
 
     for i in len(samples):
         im_part = np.imag(samples[i])
