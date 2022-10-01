@@ -54,7 +54,7 @@ class TestREciever(unittest.TestCase):
     
         final_signal_filtered  = filterSignal(final_signal,cos_filter)
 
-        bits = demodulator(final_signal_filtered,T,fs,1)
+        bits = demodulator(final_signal_filtered,T,fs)
         self.assertEqual(sum(np.abs(bits-random_vector)),0)
 
     """

@@ -3,7 +3,7 @@ import numpy as np
 
 
 
-def demodulator(input_signal,T,fs,search_multiplier):
+def demodulator(input_signal,T,fs):
     #Funcion to demodulate the recieved input_signal
     Ts = 1/fs
     # Array to output the result of the demodulation
