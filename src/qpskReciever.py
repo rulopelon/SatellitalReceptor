@@ -46,3 +46,12 @@ def decisor(signal_real_decide, signal_imag_decide):
         bits = [1,0]
 
     return bits
+
+def calculatePhase(input_bits,reference_code):
+    # Module to calculate the phase shift of the recieved constellation
+    # There are four possible situations: 
+    # 1. There is no rotation
+    # 2. There is a rotation of pi/2
+    # 3. There is a rotation of pi
+    # 4. There is a rotation of 3*pi/4
+    # To calculate the shift, the input bits are going to be correlated with a reference vector
