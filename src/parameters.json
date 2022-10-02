@@ -1,6 +1,4 @@
 {
-    
-    
     "fs" : 1e6, 
     "center_freq" : 100e6, 
     "num_samples_rx" : 10000, 
