@@ -1,0 +1,12 @@
+{
+    
+    
+    "fs" : 1e6, 
+    "center_freq" : 100e6, 
+    "num_samples_rx" : 10000, 
+    "alpha" : 0.6,
+    "symbol_period" : 4,
+    "batch_size" : 81920,    
+    "reference_code" : [0,1,1,0,1],
+    "decoding_depth" : 10
+}

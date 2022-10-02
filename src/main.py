@@ -4,21 +4,24 @@ import matplotlib.pyplot as plt
 from pandas import array
 from algorithms import *
 from qpskReciever import *
-from libhackrf import *
 import math
+import json
+import os
 
 
 
 #Variable declaration
-fs = 1e6 # Hz
-center_freq = 100e6 # Hz
-num_samples = 10000 # number of samples returned per call to rx()
-recieve = True
-alpha = 0.6
-symbol_period = 4
-batch_size = 10*8192   # 20 image frames
-reference_code = [0,1,1,0,1]
-decoding_depth = 10
+with open('src/parameters.json', 'r') as f:
+  variables = json.load(f)
+
+fs = int(variables['fs']) # Hz
+center_freq = int(variables['center_freq']) # Hz
+num_samples = int(variables['num_samples_rx']) # number of samples returned per call to rx()
+alpha = float(variables['alpha'])
+symbol_period = int(variables['symbol_period'])
+batch_size = int(variables['batch_size'])   # 10 image frames
+reference_code = variables['reference_code']
+decoding_depth = int(variables['decoding_depth'])
 
 filter_time = 10*symbol_period
 t_index = np.linspace(int(-filter_time/2),int(filter_time/2),fs*filter_time)
