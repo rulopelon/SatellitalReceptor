@@ -74,8 +74,9 @@ class TestREciever(unittest.TestCase):
         N = 1000
         random_vector = np.random.randint(0,2,N)
         encoded_bits = viterbiEncoding(random_vector)
-        random_vector = random_vector[0:-(depth-1)]
+        encoded_bits = np.append(encoded_bits,np.zeros((1,depth*2),np.int8))
         decoded_bits = viterbiDecoding(encoded_bits,depth)
+        decoded_bits = decoded_bits[0:len(random_vector)]
         self.assertEqual(sum(decoded_bits-random_vector),0)
 
 
