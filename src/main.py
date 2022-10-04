@@ -66,5 +66,8 @@ for i in range(0,iterations):
     # Calculate the phase shift
     phase_corrected_bits = calculatePhase(demodulated_bits,reference_code_encoded)
 
+    phase_corrected_bits = np.append(phase_corrected_bits,np.zeros((1,decoding_depth*2),np.int8))
+
     # Channel decode the input bits
     decoded_bits = viterbiDecoding(phase_corrected_bits,decoding_depth)
+    decoded_bits = decoded_bits[0:len(phase_corrected_bits)]
