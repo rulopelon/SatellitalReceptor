@@ -18,18 +18,18 @@ fs = int(variables['fs']) # Hz
 center_freq = int(variables['center_freq']) # Hz
 num_samples = int(variables['num_samples_rx']) # number of samples returned per call to rx()
 alpha = float(variables['alpha'])
-symbol_period = int(variables['symbol_period'])
+symbol_period = float(variables['symbol_period'])
 batch_size = int(variables['batch_size'])   # 10 image frames
 reference_code = variables['reference_code']
 decoding_depth = int(variables['decoding_depth'])
 
 filter_time = 10*symbol_period
-t_index = np.linspace(int(-filter_time/2),int(filter_time/2),fs*filter_time)
+t_index = np.linspace(int(-filter_time/2),int(filter_time/2),math.ceil(fs*filter_time)) # fs*filter_time
 length_rrcos_filter = len(t_index)
 
 
 # Filter to filter the recieved signal
-RRCosFilter = getFilter(length_rrcos_filter,alpha,symbol_period,fs)
+RRCosFilter,time_index_filter = getFilter(length_rrcos_filter,alpha,symbol_period,fs)
 
 # Encode the reference secuence
 reference_code_encoded = viterbiEncoding(reference_code)
@@ -39,9 +39,10 @@ showSpectrum(RRCosFilter,fs)
 
 total_array = np.empty([0])
 # Read all the files
-for file in os.listdir("signals"):
-    new_array = np.load(file)
-    np.append(total_array, new_array)
+for file in os.listdir("exampleSignals"):
+    new_array = np.load("exampleSignals/"+file)
+    total_array = np.append(total_array, new_array)
+    
 
 final_bits = np.empty([0])
 

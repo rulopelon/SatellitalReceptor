@@ -17,7 +17,7 @@ def costasAlgo(samples,Ts):
 
     t = np.linspace(0,total_time,int((1/Ts)*total_time))# Creating the time vector
 
-    for i in len(samples):
+    for i in range(0,len(samples)-1):
         im_part = np.imag(samples[i])
         real_part = np.real(samples[i])
         #The sample is multiplied by the phase correction
@@ -48,15 +48,20 @@ def costasAlgo(samples,Ts):
     lpf = getLPF()
     real_signal_filtered = filterSignal(real_signal,lpf)
     imag_signal_filtered = filterSignal(imag_signal,lpf)
+    
+    final_array = np.empty([0])
+    for index in range(0,len(real_signal_filtered)):
+        final_array = np.append(final_array,np.complex(real_signal_filtered[index],imag_signal_filtered[index]))
 
-    return np.complex(real_signal_filtered,imag_signal_filtered)
+    return final_array
     
 def getLPF():
 
     with open('lpFilter.txt') as file:
         lines = file.readlines()
         lines = [line.rstrip() for line in lines]
-    return lines
+   
+    return np.array(lines, dtype=np.float32)
     
 
 def getFilter(N,alpha,Ts,Fs):

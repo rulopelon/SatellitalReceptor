@@ -58,16 +58,16 @@ def calculatePhase(input_bits,reference_code):
     # To calculate the shift, the input bits are going to be correlated with a reference vector
     
     # First of all the input array is reshaped on pairs
-    paired_bits = np.reshape(input_bits,[len(input_bits)/2,2])
+    paired_bits = np.reshape(input_bits,[int(len(input_bits)/2),2])
     
-    pi_2_phase_array =np.zeros([len(input_bits)/2,2])
-    pi_phase_array =np.zeros([len(input_bits)/2,2])
-    pi_3_4_phase_array =np.zeros([len(input_bits)/2,2])
+    pi_2_phase_array =np.zeros([int(len(input_bits)/2),2])
+    pi_phase_array =np.zeros([int(len(input_bits)/2),2])
+    pi_3_4_phase_array =np.zeros([int(len(input_bits)/2),2])
     
 
     # The first phase shift is pi/2
-    for i in range(0,len(len(input_bits)/2)-1):
-        bits = str(paired_bits[0])+str(paired_bits[1])
+    for i in range(0,int(len(input_bits)/2)-1):
+        bits = str(paired_bits[i,0])+str(paired_bits[i,1])
         # Calculate the integer value of the pair of bits
         value = int(bits,2)
         if value == 0:
@@ -84,8 +84,8 @@ def calculatePhase(input_bits,reference_code):
             pi_2_phase_array[i,1] = 1
 
     # The second phase shift is pi
-    for i in range(0,len(len(input_bits)/2)-1):
-        bits = str(paired_bits[0])+str(paired_bits[1])
+    for i in range(0,int(len(input_bits)/2)-1):
+        bits = str(paired_bits[i,0])+str(paired_bits[i,1])
         # Calculate the integer value of the pair of bits
         value = int(bits,2)
 
@@ -103,8 +103,8 @@ def calculatePhase(input_bits,reference_code):
             pi_phase_array[i,1] = 0
 
     # The third phase shift is 3*pi/4
-    for i in range(0,len(len(input_bits)/2)-1):
-        bits = str(paired_bits[0])+str(paired_bits[1])
+    for i in range(0,int(len(input_bits)/2)-1):
+        bits = str(paired_bits[i,0])+str(paired_bits[i,1])
         # Calculate the integer value of the pair of bits
         value = int(bits,2)
         
@@ -122,9 +122,9 @@ def calculatePhase(input_bits,reference_code):
             pi_3_4_phase_array[i,1] = 0
 
     # Reshape the arrays
-    pi_2_phase_array = np.reshape(pi_2_phase_array,[len(input_bits),1])
-    pi_phase_array = np.reshape(pi_phase_array,[len(input_bits),1])
-    pi_3_4_phase_array = np.reshape(pi_3_4_phase_array,[len(input_bits),1])
+    pi_2_phase_array = np.reshape(pi_2_phase_array,[int(len(input_bits))])
+    pi_phase_array = np.reshape(pi_phase_array,[int(len(input_bits))])
+    pi_3_4_phase_array = np.reshape(pi_3_4_phase_array,[int(len(input_bits))])
 
     # Perform the correlation of the different shifts with the input sequence
     no_shift_correlation = np.correlate(input_bits,reference_code)
@@ -152,4 +152,4 @@ def calculatePhase(input_bits,reference_code):
     else:
         bits_return = pi_3_4_phase_array
 
-    return bits_return
+    return bits_return.astype(int)
