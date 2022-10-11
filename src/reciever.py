@@ -39,7 +39,7 @@ sdr.rx_buffer_size = num_samples
 
 i = 0
 while recieve:
-    samples = hackrf.read_samples(num_samples) # receive samples
+    samples = sdr.rx() # receive samples
 
     # Save the samples
     np.save(str(i)+'.npy',samples)    
