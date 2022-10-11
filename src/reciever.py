@@ -5,6 +5,7 @@ from algorithms import *
 from qpskReciever import *
 from libhackrf import *
 import json
+import adi 
 
 #Variable declaration
 with open('src/parameters.json', 'r') as f:
@@ -26,7 +27,7 @@ hackrf.sample_rate = int(fs)
 hackrf.center_freq = int(center_freq)
 hackrf.enable_amp()
 
-"""
+
 sdr = adi.Pluto()
 sdr.gain_control_mode_chan0 = 'manual'
 sdr.rx_hardwaregain_chan0 = 70.0 # dB
@@ -34,7 +35,7 @@ sdr.rx_lo = int(center_freq)
 sdr.fs = int(fs)
 sdr.rx_rf_bandwidth = int(fs) # filter width, just set it to the same as sample rate for now
 sdr.rx_buffer_size = num_samples
-"""
+
 
 i = 0
 while recieve:
