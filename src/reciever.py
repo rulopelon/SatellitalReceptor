@@ -20,13 +20,13 @@ symbol_period = int(variables['symbol_period'])
 recieve = True
 
 
-
+"""
 hackrf = HackRF()
 
 hackrf.sample_rate = int(fs)
 hackrf.center_freq = int(center_freq)
 hackrf.enable_amp()
-
+"""
 
 sdr = adi.Pluto()
 sdr.gain_control_mode_chan0 = 'manual'
