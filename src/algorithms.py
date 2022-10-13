@@ -12,23 +12,18 @@ def costasAlgo(samples,Ts):
     alpha = 0.132
     beta = 0.00932
     
-    #Vector for the time
-    total_time = Ts*len(samples)
-
-    t = np.linspace(0,total_time,int((1/Ts)*total_time))# Creating the time vector
-
-    for i in range(0,len(samples)-1):
+    for i in range(0,len(samples)):
         im_part = np.imag(samples[i])
         real_part = np.real(samples[i])
         #The sample is multiplied by the phase correction
 
-        im_part_corrected = im_part*np.sin(2*np.pi*t[i]+phase_correction)
-        real_part_corrected = real_part*np.cos(2*np.pi*t[i]+phase_correction)
+        im_part_corrected = im_part*np.exp(-1j*phase_correction)
+        real_part_corrected = real_part*np.exp(-1*phase_correction)
         
         real_signal[i] = real_part_corrected
         imag_signal[i]= im_part_corrected
 
-        #Calculating the new phase shift
+        #Calculating the distance to the desired value
         if real_part > 0:
             a = 1.0
         else:
@@ -43,15 +38,9 @@ def costasAlgo(samples,Ts):
         
         phase_correction =phase
 
-    #Filtering the signal
-    # TODO
-    lpf = getLPF()
-    real_signal_filtered = filterSignal(real_signal,lpf)
-    imag_signal_filtered = filterSignal(imag_signal,lpf)
+    #Return the result
+    final_array = real_signal+1j*imag_signal
     
-    final_array = np.empty([0])
-    for index in range(0,len(real_signal_filtered)):
-        final_array = np.append(final_array,np.complex(real_signal_filtered[index],imag_signal_filtered[index]))
 
     return final_array
     
@@ -131,6 +120,7 @@ def showSpectrum(signal,fs):
     fft_signal = np.fft.fftshift(np.fft.fft(signal))
     frequency_axis = np.linspace(-0.5*fs,0.5*fs,len(signal))
     plt.plot(frequency_axis,np.abs(fft_signal),'.-')
+    plt.show()
 
 def viterbiDecoding(input_bits,depth):
     #Creates the
@@ -145,3 +135,18 @@ def viterbiEncoding(bits):
     encoded_bits, state = cc.conv_encoder(bits, '0000000')
     
     return encoded_bits.astype(int)
+
+
+def drawFullEyeDiagram(xt,Fs,T):
+    """Draw the eye diagram using all parts of the given signal xt"""
+    samples_perT = Fs*T
+    samples_perWindow = 2*Fs*T
+    parts = []
+    startInd = 2*samples_perT   # ignore some transient effects at beginning of signal
+    
+    for k in range(int(len(xt)/samples_perT) - 6):
+        parts.append(xt[startInd + k*samples_perT + np.arange(samples_perWindow)])
+    parts = np.array(parts).T
+    
+    t_part = np.arange(-T, T, 1/Fs)
+    plt.plot(t_part, parts, 'b-')
