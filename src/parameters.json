@@ -1,10 +1,10 @@
 {
-    "fs" : 40e6, 
+    "fs" : 30e6, 
     "center_freq" : 137.9e6, 
     "num_samples_rx" : 10000, 
-    "alpha" : 0.6,
-    "symbol_period" : 2.7777e-5,
-    "batch_size" : 81920,    
+    "alpha" : 0.5,
+    "symbol_period" : 2.66666e-5,
+    "batch_size" : 65536,    
     "reference_code" : [0,1,1,0,1],
     "decoding_depth" : 10
 }

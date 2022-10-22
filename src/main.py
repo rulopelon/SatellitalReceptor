@@ -39,8 +39,8 @@ showSpectrum(RRCosFilter,fs)
 
 total_array = np.empty([0])
 # Read all the files
-for file in os.listdir("exampleSignals"):
-    new_array = np.load("exampleSignals/"+file)
+for file in os.listdir("exampleSignals2"):
+    new_array = np.load("exampleSignals2/"+file)
     total_array = np.append(total_array, new_array)
     
 
@@ -59,7 +59,7 @@ for i in range(0,iterations):
     signal = costasAlgo(array_process,1/fs)
     
     # Filter the signal with the adapted filter
-    signal_filtered  = filterSignal(signal,RRCosFilter)
+    signal_filtered  = filterSignal(array_process,RRCosFilter)
 
     # Decode the recieved signal
     demodulated_bits = demodulator(signal_filtered,symbol_period,fs)

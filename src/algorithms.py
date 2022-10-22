@@ -6,6 +6,7 @@ def costasAlgo(samples,Ts):
     # imaginary por el seno
     real_signal = np.zeros((len(samples),))
     imag_signal = np.zeros((len(samples),))
+    error_array = np.zeros((len(samples),))
     
     #Variables initialization
     phase_correction = 0
@@ -17,11 +18,10 @@ def costasAlgo(samples,Ts):
         real_part = np.real(samples[i])
         #The sample is multiplied by the phase correction
 
-        im_part_corrected = im_part*np.exp(-1j*phase_correction)
-        real_part_corrected = real_part*np.exp(-1*phase_correction)
+        samples = samples*np.exp(-1j*phase_correction)
         
-        real_signal[i] = real_part_corrected
-        imag_signal[i]= im_part_corrected
+        real_signal[i] = np.real(samples[i])
+        imag_signal[i]= np.real(np.imag(samples[i]))
 
         #Calculating the distance to the desired value
         if real_part > 0:
@@ -35,7 +35,7 @@ def costasAlgo(samples,Ts):
 
         error =  a * im_part - b * real_part
         phase =(error*beta)+(alpha*error)
-        
+        error_array[i] = error
         phase_correction =phase
 
     #Return the result
