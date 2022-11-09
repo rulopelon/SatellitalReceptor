@@ -55,7 +55,8 @@ class TestREciever(unittest.TestCase):
     
         final_signal_filtered  = filterSignal(final_signal,cos_filter)
 
-        bits = demodulator(final_signal_filtered,T,fs)
+        sampled_signal = signalSampling(final_signal_filtered,T,fs)
+        bits = demodulator(sampled_signal)
         self.assertEqual(sum(np.abs(bits-random_vector)),0)
         
 
@@ -97,11 +98,17 @@ class TestREciever(unittest.TestCase):
                 signal_imag = np.append(signal_imag,np.ones(samples_symbol))
     
         final_signal = signal_real +1j*signal_imag
+        
+        #Introducing some phase shift error
+        final_signal = final_signal*np.exp(1j*10*np.pi/180)
 
-        signal_costas = costasAlgo(final_signal,ts)
-        final_signal_filtered  = filterSignal(signal_costas,cos_filter)
+        final_signal_filtered  = filterSignal(final_signal,cos_filter)
 
-        bits = demodulator(final_signal_filtered,T,fs)
+        sampled_signal = signalSampling(final_signal_filtered,T,fs)
+        
+        signal_costas = costasAlgo(sampled_signal)
+
+        bits = demodulator(signal_costas)
         self.assertEqual(sum(np.abs(bits-random_vector)),0)
 
     def testViterbiLengthEncoder(self):

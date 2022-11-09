@@ -1,20 +1,22 @@
-# Code read the date from the .np files and decode the image frames
-import numpy as np
-import matplotlib.pyplot as plt
-from pandas import array
+from scipy.io import wavfile
 from algorithms import *
-from qpskReciever import *
-import math
 import json
-import os
+import math
+from qpskReciever import *
 
+samplerate, data = wavfile.read('./exampleSignals3/testSignal.wav')
 
 
 #Variable declaration
 with open('src/parameters.json', 'r') as f:
   variables = json.load(f)
 
-fs = int(variables['fs']) # Hz
+inphase = data[:,0]
+quadrature = data[:,1]
+
+total_array = inphase+1j*quadrature
+
+fs = samplerate # Hz
 center_freq = int(variables['center_freq']) # Hz
 num_samples = int(variables['num_samples_rx']) # number of samples returned per call to rx()
 alpha = float(variables['alpha'])
@@ -35,16 +37,9 @@ RRCosFilter,time_index_filter = getFilter(length_rrcos_filter,alpha,symbol_perio
 reference_code_encoded = viterbiEncoding(reference_code)
 
 # The filter is shown
-showSpectrum(RRCosFilter,fs)
+#showSpectrum(RRCosFilter,fs)
 
-total_array = np.empty([0])
-# Read all the files
-for file in os.listdir("exampleSignals2"):
-    new_array = np.load("exampleSignals2/"+file)
-    total_array = np.append(total_array, new_array)
-    
 
-final_bits = np.empty([0])
 
 #Process the array on batches of constant size
 iterations = math.ceil(len(total_array)/batch_size)
@@ -55,11 +50,12 @@ for i in range(0,iterations):
     else:
         array_process = total_array[batch_size*i:len(total_array)]
     
+
     # Filtering the signal with the root raised cosine filter    
     final_signal_filtered  = filterSignal(array_process,RRCosFilter)
 
     # Getting one sample for each symbol
-    sampled_signal = signalSampling(final_signal_filtered,T,fs)
+    sampled_signal = signalSampling(final_signal_filtered,symbol_period,fs)
 
     # Applying the costas phase correction algorithm
     signal_costas = costasAlgo(sampled_signal)

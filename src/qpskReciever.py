@@ -3,27 +3,11 @@ import numpy as np
 
 
 
-def demodulator(input_signal,T,fs):
+def demodulator(input_signal):
     #Funcion to demodulate the recieved input_signal
-    Ts = 1/fs
-    # Array to output the result of the demodulation
     output_vector = []
-    #input_signal  = input_signal/max(np.abs(input_signal))
-    #Split the input_signal on the real and imaginary part
-    real_part = np.real(input_signal)
-    imaginary_part = np.imag(input_signal)
-
-    index_search  = int(T*fs/2)
-    #Search for the first symbol
-    index_search = index_search+np.argmax(np.abs(real_part[index_search:index_search*2]))
-
-    while index_search <= len(input_signal):
-        # Passing the segment of signal to analyze to the
-        bits = decisor(real_part[index_search],imaginary_part[index_search])
-        
-        #Updating the index to search
-        index_search = index_search+int(T*fs)
-
+    for sample in input_signal:
+        bits = decisor(np.real(sample),np.imag(sample))
         # Writting the results to the output array
         output_vector.append([bits])
 

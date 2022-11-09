@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sk_dsp_comm.fec_conv as fec
 
-def costasAlgo(samples,Ts):
+def costasAlgo(samples):
     # imaginary por el seno
     real_signal = np.zeros((len(samples),))
     imag_signal = np.zeros((len(samples),))
@@ -14,14 +14,16 @@ def costasAlgo(samples,Ts):
     beta = 0.00932
     
     for i in range(0,len(samples)):
-        im_part = np.imag(samples[i])
-        real_part = np.real(samples[i])
+        
         #The sample is multiplied by the phase correction
 
-        samples = samples*np.exp(-1j*phase_correction)
+        corrected_sample= samples[i]*np.exp(-1j*phase_correction)
         
-        real_signal[i] = np.real(samples[i])
-        imag_signal[i]= np.real(np.imag(samples[i]))
+        real_signal[i] = np.real(corrected_sample)
+        imag_signal[i]= np.real(np.imag(corrected_sample))
+
+        im_part = np.imag(corrected_sample)
+        real_part = np.real(corrected_sample)
 
         #Calculating the distance to the desired value
         if real_part > 0:
@@ -32,11 +34,12 @@ def costasAlgo(samples,Ts):
             b = 1.0
         else:
             b = -1.0
-
-        error =  a * im_part - b * real_part
+        desired_angle = np.angle(a+1j*b)
+        #error =  a * im_part - b * real_part
+        error = np.angle(corrected_sample)-desired_angle
         phase =(error*beta)+(alpha*error)
         error_array[i] = error
-        phase_correction =phase
+        phase_correction =phase_correction+phase
 
     #Return the result
     final_array = real_signal+1j*imag_signal
@@ -150,3 +153,22 @@ def drawFullEyeDiagram(xt,Fs,T):
     
     t_part = np.arange(-T, T, 1/Fs)
     plt.plot(t_part, parts, 'b-')
+
+def signalSampling(input_signal,T,fs):
+    # Function to recieve a full signal and output one sample per symbol, based on the maximun value of the beginning of the signal
+    Ts = 1/fs
+    # Array to output the result of the demodulation
+    output_vector = []
+    #Split the input_signal on the real and imaginary part
+    real_part = np.real(input_signal)
+
+    index_search  = int(T*fs/2)
+    #Search for the first symbol
+    index_search = index_search+np.argmax(np.abs(real_part[index_search:index_search*2]))
+
+    while index_search <= len(input_signal):
+        output_vector.append(input_signal[index_search])
+        #Updating the index to search
+        index_search = index_search+int(T*fs)
+
+    return output_vector
