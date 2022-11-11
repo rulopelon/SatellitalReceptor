@@ -35,11 +35,11 @@ def costasAlgo(samples):
         else:
             b = -1.0
         desired_angle = np.angle(a+1j*b)
-        #error =  a * im_part - b * real_part
+        error =  a * im_part - b * real_part
         error = np.angle(corrected_sample)-desired_angle
         phase =(error*beta)+(alpha*error)
         error_array[i] = error
-        phase_correction =phase_correction+phase
+        phase_correction =phase_correction+error*alpha
 
     #Return the result
     final_array = real_signal+1j*imag_signal

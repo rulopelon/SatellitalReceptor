@@ -100,7 +100,7 @@ class TestREciever(unittest.TestCase):
         final_signal = signal_real +1j*signal_imag
         
         #Introducing some phase shift error
-        final_signal = final_signal*np.exp(1j*10*np.pi/180)
+        #final_signal = final_signal*np.exp(1j*10*np.pi/180)
 
         final_signal_filtered  = filterSignal(final_signal,cos_filter)
 
